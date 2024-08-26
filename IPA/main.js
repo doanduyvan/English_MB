@@ -5,6 +5,7 @@ let check = true;
 let indexCurent = null;
 let idCurent = null;
 let audio = null;
+let isRender = true;
 
 fetch('./ipa.json')
     .then(response => response.json())
@@ -31,23 +32,46 @@ function hanldClick(e){
 
 
 function renderIPA(id,ipaName){
+
     idCurent = id;
     const ipa = IPAS[indexCurent];
+    if(isRender){
     const content = document.querySelector('.content');
     content.innerHTML = '';
     const div1 = document.createElement('div');
     div1.classList.add('div1');
     div1.innerHTML = `
                 <div class="ipa">
-                    <span> ${ipaName} </span>
+                    <span class="ipaName"> ${ipaName} </span>
                 </div>
                 <audio controls>
-                    <source src="${ipa.url_sound}" type="audio/mpeg">
+                    <source class="url_sound" src="${ipa.url_sound}" type="audio/mpeg">
                 </audio>
     `;
     content.appendChild(div1);
+    const div2 = document.createElement('div');
+    div2.classList.add('div2');
+    const ul = document.createElement('ul');
+    ul.classList.add('ul_description');
+    const li = ipa.description.map(item=> `<li>${item}</li>`).join('');
+    ul.innerHTML = li;
+    div2.appendChild(ul);
+    content.appendChild(div2);
     audio = div1.querySelector('audio');
     audio.play();
+    isRender = false;
+    }else{
+        const EipaName = document.querySelector('.ipaName');
+        const url_sound = document.querySelector('.url_sound');
+        const ul = document.querySelector('.ul_description');
+        EipaName.innerText = ipaName;
+        url_sound.src = ipa.url_sound;
+        ul.innerHTML = ipa.description.map(item=> `<li>${item}</li>`).join('');
+        audio = document.querySelector('.div1 audio');
+        audio.load();
+        audio.play();
+    }
+
 }
 
 
